@@ -19,15 +19,21 @@
                 $isi = str_replace("[[", '', $isi);
                 $isi = str_replace("]]", '', $isi);
                 $isi = str_replace('\n', '<br>', $isi);
+                $isi = str_replace("Key: 'Buku.Judul' Error:Field validation for 'Judul' failed on the 'required' tag",
+                'Judul cant be empty', $isi);
+                $isi = str_replace("Key: 'Buku.Pengarang' Error:Field validation for 'Pengarang' failed on the 'required' tag",
+                'Pengarang cant be empty', $isi);
+                $isi = str_replace("Key: 'Buku.TanggalPublikasi' Error:Field validation for 'TanggalPublikasi' failed on the 'required' tag",
+                'Tanggal Publikasi cant be empty', $isi);
                 return $isi;
             }
-                function convertToUnorderedList($input) {
+            function convertToUnorderedList($input) {
                 // Membagi string menjadi array berdasarkan <br>
                 $lines = explode('<br>', $input);
                 
                 // Mengonversi setiap baris menjadi item dalam unordered list
                 $output = '<ul>';
-                foreach ($lines as $line) {
+                    foreach ($lines as $line) {
                     $line = trim($line);
                     if (!empty($line)) {
                         $output .= '<li>' . $line . '</li>';
@@ -37,6 +43,30 @@
                 
                 return $output;
             }
+            function set_next_prev($isi) {
+                $isi = str_replace('pagination.previous', '<span aria-hidden="true">&laquo;</span> Prev', $isi);
+                $isi = str_replace("pagination.next", 'Next <span aria-hidden="true">&raquo;</span>', $isi);
+                return $isi;
+            }
+            function prev_page($num) {
+                if ($num-1==0) {
+                    return $num;
+                }
+                else{
+                    return $num-1;
+                }
+                
+            }
+            function next_page($num, $num2) {
+                if ($num+1>$num2) {
+                    return $num;
+                }
+                else{
+                    return $num+1;
+                }
+                
+            }
+
         ?>
         <div class="my-3 p-3 bg-body rounded shadow-sm">
             @if ($errors->any())
@@ -100,7 +130,7 @@
                 </thead>
                 <tbody>
                     <?php
-                        $i = 1;
+                        $i = ($page-1)*$pageSize+1;
                     ?>
                     @foreach ($data as $item)
                     <tr>
@@ -118,12 +148,29 @@
                         </td>
                     </tr>
                     <?php
-                        $i++;
+                        if ($i < $page*$pageSize) {
+                            $i++;
+                        }
+                        
                     ?>
                     @endforeach
                     
                 </tbody>
             </table>
+
+            @if ($totalPage!=0)
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="{{url('buku')}}?page={{prev_page($page)}}">{!!set_next_prev('pagination.previous')!!}</a></li>
+                    @for ($i = 1; $i <= $totalPage; $i++)
+                    <li class="page-item {{$page==$i?'active':''}}"><a class="page-link" href="{{url('buku')}}?page={{$i}}">{{$i}}</a></li>
+                    @endfor
+                    
+                    <li class="page-item"><a class="page-link" href="{{url('buku')}}?page={{next_page($page,$totalPage)}}">{!!set_next_prev('pagination.next')!!}</a></li>
+                    
+                </ul>
+            </nav>
+            @endif
 
         </div>
         <!-- AKHIR DATA -->

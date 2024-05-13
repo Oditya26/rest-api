@@ -12,12 +12,15 @@ import (
 func Index(c *gin.Context) {
 	var bukus []models.Buku
 
-	models.DB.Order("judul asc").Find(&bukus)
+	models.DB.Scopes(models.Paginate(c)).Order("judul asc").Find(&bukus)
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":  true,
-		"message": "Data ditemukan",
-		"data":    bukus,
+		"status":    true,
+		"message":   "Data ditemukan",
+		"data":      bukus,
+		"page":      c.GetInt("page"),
+		"pageSize":  c.GetInt("pageSize"),
+		"totalPage": c.GetInt("totalPages"),
 	})
 }
 
