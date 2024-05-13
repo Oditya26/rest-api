@@ -122,7 +122,7 @@ func Delete(c *gin.Context) {
 	if models.DB.Delete(&buku, id).RowsAffected == 0 {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  false,
-			"message": "tidak dapat menghapus product",
+			"message": "tidak dapat menghapus data",
 		})
 		return
 	}
