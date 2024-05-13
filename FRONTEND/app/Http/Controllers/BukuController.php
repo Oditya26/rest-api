@@ -95,14 +95,17 @@ class BukuController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $currentTime = date('Y-m-d');
         $judul = $request->judul;
         $pengarang = $request->pengarang;
         $tanggal_publikasi = $request->tanggal_publikasi;
+        $updated_at =  $currentTime;
 
         $parameter = [
             'judul'=>$judul,
             'pengarang'=>$pengarang,
             'tanggal_publikasi'=>$tanggal_publikasi,
+            'updated_at'=>$updated_at,
         ];
 
         $client = new Client();
