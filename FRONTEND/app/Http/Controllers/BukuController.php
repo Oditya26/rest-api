@@ -95,7 +95,7 @@ class BukuController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $currentTime = date('Y-m-d');
+        $currentTime = date('Y-m-d H:i:s');
         $judul = $request->judul;
         $pengarang = $request->pengarang;
         $tanggal_publikasi = $request->tanggal_publikasi;
