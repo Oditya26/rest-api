@@ -34,14 +34,19 @@ class BukuController extends Controller
      */
     public function store(Request $request)
     {
+        $currentTime = date('Y-m-d H:i:s');
         $judul = $request->judul;
         $pengarang = $request->pengarang;
         $tanggal_publikasi = $request->tanggal_publikasi;
+        $created_at =  $currentTime;
+        $updated_at =  null;
 
         $parameter = [
             'judul'=>$judul,
             'pengarang'=>$pengarang,
             'tanggal_publikasi'=>$tanggal_publikasi,
+            'created_at'=>$created_at,
+            'updated_at'=>$updated_at,
         ];
 
         $client = new Client();
