@@ -13,14 +13,36 @@
 <body class="bg-light">
     <main class="container">
         <!-- START FORM -->
+        <?php
+            function set_list_error($isi) {
+                $isi = str_replace('"', '', $isi);
+                $isi = str_replace("[[", '', $isi);
+                $isi = str_replace("]]", '', $isi);
+                $isi = str_replace('\n', '<br>', $isi);
+                return $isi;
+            }
+                function convertToUnorderedList($input) {
+                // Membagi string menjadi array berdasarkan <br>
+                $lines = explode('<br>', $input);
+                
+                // Mengonversi setiap baris menjadi item dalam unordered list
+                $output = '<ul>';
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (!empty($line)) {
+                        $output .= '<li>' . $line . '</li>';
+                    }
+                }
+                $output .= '</ul>';
+                
+                return $output;
+            }
+        ?>
         <div class="my-3 p-3 bg-body rounded shadow-sm">
             @if ($errors->any())
                 <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $item)
-                            <li>{{$item}}</li>
-                        @endforeach
-                    </ul>
+                    {!!convertToUnorderedList(set_list_error($errors))!!}
+                    
                 </div>
             @endif
 

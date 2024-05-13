@@ -28,13 +28,13 @@ func Show(c *gin.Context) {
 	if err := models.DB.First(&buku, id).Error; err != nil {
 		switch err {
 		case gorm.ErrRecordNotFound:
-			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			c.JSON(http.StatusOK, gin.H{
 				"status":  false,
 				"message": "Data tidak ditemukan",
 			})
 			return
 		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			c.JSON(http.StatusOK, gin.H{
 				"status":  false,
 				"message": err.Error(),
 			})
@@ -52,9 +52,10 @@ func Create(c *gin.Context) {
 	var buku models.Buku
 
 	if err := c.ShouldBindJSON(&buku); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"status":  false,
 			"message": "Gagal memasukkan data",
+			"data":    err.Error(),
 		})
 		return
 	}
@@ -63,15 +64,17 @@ func Create(c *gin.Context) {
 		errors := err.(validator.ValidationErrors)
 		c.JSON(http.StatusOK, gin.H{
 			"status":  false,
-			"message": errors.Error(),
+			"message": "Tidak dapat menambahkan data",
+			"data":    errors.Error(),
 		})
 		return
 	}
 
 	if err := models.DB.Create(&buku).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"status":  false,
 			"message": "Gagal memasukkan data",
+			"data":    err.Error(),
 		})
 		return
 	}
@@ -87,17 +90,19 @@ func Update(c *gin.Context) {
 	id := c.Param("id")
 
 	if err := c.ShouldBindJSON(&buku); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"status":  false,
 			"message": "Gagal melakukan update data",
+			"data":    err.Error(),
 		})
 		return
 	}
 
 	if models.DB.Model(&buku).Where("id = ?", id).Updates(&buku).RowsAffected == 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"status":  false,
-			"message": "Data tidak ditemukan",
+			"message": "Tidak ada perubahan",
+			"data":    "Tidak ada perubahan",
 		})
 		return
 	}
@@ -105,6 +110,7 @@ func Update(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  true,
 		"message": "Sukses melakukan update data",
+		"data":    buku,
 	})
 }
 
@@ -114,7 +120,10 @@ func Delete(c *gin.Context) {
 	id := c.Param("id")
 
 	if models.DB.Delete(&buku, id).RowsAffected == 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "tidak dapat menghapus product"})
+		c.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "tidak dapat menghapus product",
+		})
 		return
 	}
 

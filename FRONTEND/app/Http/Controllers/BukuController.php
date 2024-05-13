@@ -52,6 +52,7 @@ class BukuController extends Controller
         ]);
         $content = $response->getBody()->getContents();
         $contentArray = json_decode($content, true);
+        
         if($contentArray['status']!=true) {
             $error = $contentArray['data'];
             return redirect()->to('buku')->withErrors($error)->withInput();
@@ -59,6 +60,7 @@ class BukuController extends Controller
         {
             return redirect()->to('buku')->with('success','Berhasil memasukkan data.');
         }
+        
     }
 
     /**
