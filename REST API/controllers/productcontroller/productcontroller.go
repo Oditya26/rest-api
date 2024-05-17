@@ -12,7 +12,7 @@ import (
 func Index(c *gin.Context) {
 	var bukus []models.Buku
 
-	models.DB.Scopes(models.Paginate(c)).Order("judul asc").Find(&bukus)
+	models.DB.Scopes(models.Paginate(c)).Order("tanggal_publikasi asc").Find(&bukus)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":    true,
